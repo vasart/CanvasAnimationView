@@ -2,118 +2,119 @@ package com.wagado.widget;
 
 import android.graphics.Canvas;
 import android.view.View;
-import android.view.animation.Animation;
 
 public abstract class CanvasAnimation {
-	final private long mDuration;
-	final private boolean isFillAfter;
+   public static final int START_ON_FIRST_FRAME = -1;
+   public static final int ABSOLUTE = 0;
+   public static final int RELATIVE_TO_SELF = 1;
+   public static final int RELATIVE_TO_PARENT = 2;
 
-	public boolean isStarted;
-	public boolean isExpired;
-	public boolean isEnded;
+    private final long mDuration;
+    private final boolean isFillAfter;
 
-	private long mStartTime;
-	private IAnimationListener mListener;
+    public boolean isStarted;
+    public boolean isExpired;
+    public boolean isEnded;
 
-	public CanvasAnimation(long duration, boolean fillAfter) {
-		mDuration = duration;
-		isFillAfter = fillAfter;
-	}
+    private long mStartTime;
+    private AnimationListener mListener;
 
-	public void reset() {
-		isStarted = false;
-		isExpired = false;
-		isEnded = false;
+    public CanvasAnimation(long duration, boolean fillAfter) {
+        mDuration = duration;
+        isFillAfter = fillAfter;
+    }
 
-		mStartTime = Animation.START_ON_FIRST_FRAME;
-	}
+    public void reset() {
+        isStarted = false;
+        isExpired = false;
+        isEnded = false;
 
-	public void animate(View view, Canvas canvas) {
-		if (mStartTime == Animation.START_ON_FIRST_FRAME) {
-			mStartTime = System.currentTimeMillis();
-		}
+        mStartTime = START_ON_FIRST_FRAME;
+    }
 
-		final long currentTime = System.currentTimeMillis();
-		final float normalizedTime;
-		if (getDuration() != 0) {
-			normalizedTime = ((float) (currentTime - mStartTime)) / (float) getDuration();
-		} else {
-			// time is a step-change with a zero duration
-			normalizedTime = currentTime < mStartTime ? 0.0f : 1.0f;
-		}
+    public void animate(View view, Canvas canvas) {
+        if (mStartTime == START_ON_FIRST_FRAME) {
+            mStartTime = System.currentTimeMillis();
+        }
 
-		isExpired = normalizedTime >= 1.0f;
+        final long currentTime = System.currentTimeMillis();
+        final float normalizedTime;
+        if (getDuration() != 0) {
+            normalizedTime = ((float) (currentTime - mStartTime)) / (float) getDuration();
+        } else {
+            // time is a step-change with a zero duration
+            normalizedTime = currentTime < mStartTime ? 0.0f : 1.0f;
+        }
 
-		if (normalizedTime >= 0.0f && normalizedTime <= 1.0f) {
-			if (!isStarted) {
-				fireAnimationStart();
-				isStarted = true;
-			}
+        isExpired = normalizedTime >= 1.0f;
 
-			handle(canvas, normalizedTime);
-		}
+        if (normalizedTime >= 0.0f && normalizedTime <= 1.0f) {
+            if (!isStarted) {
+                fireAnimationStart();
+                isStarted = true;
+            }
 
-		if (isExpired) {
-			if (isEnded) {
-				fireAnimationEnd();
-				isEnded = true;
-			}
+            handle(canvas, normalizedTime);
+        }
 
-			if (isFillAfter()) {
-				handle(canvas, normalizedTime);
-			}
-		} else {
-			view.invalidate();
-		}
-	}
+        if (isExpired) {
+            if (isEnded) {
+                fireAnimationEnd();
+                isEnded = true;
+            }
 
-	public void setListener(IAnimationListener listener) {
-		mListener = listener;
-	}
+            if (isFillAfter()) {
+                handle(canvas, normalizedTime);
+            }
+        } else {
+            view.invalidate();
+        }
+    }
 
-	public IAnimationListener getListener() {
-		return mListener;
-	}
+    public void setListener(AnimationListener listener) {
+        mListener = listener;
+    }
 
-	public long getDuration() {
-		return mDuration;
-	}
+    public AnimationListener getListener() {
+        return mListener;
+    }
 
-	public boolean isFillAfter() {
-		return isFillAfter;
-	}
+    public long getDuration() {
+        return mDuration;
+    }
 
-	protected abstract void handle(Canvas canvas, float normalizedTime);
+    public boolean isFillAfter() {
+        return isFillAfter;
+    }
 
-	protected void fireAnimationStart() {
-		if (getListener() != null) {
-			getListener().onAnimationStart(this);
-		}
-	}
+    protected abstract void handle(Canvas canvas, float normalizedTime);
 
-	protected void fireAnimationEnd() {
-		if (getListener() != null) {
-			getListener().onAnimationEnd(this);
-		}
-	}
+    protected void fireAnimationStart() {
+        if (getListener() != null) {
+            getListener().onAnimationStart(this);
+        }
+    }
 
+    protected void fireAnimationEnd() {
+        if (getListener() != null) {
+            getListener().onAnimationEnd(this);
+        }
+    }
 
+    public static interface AnimationListener {
+        /**
+         * <p>Notifies the start of the animation.</p>
+         *
+         * @param animation The started animation.
+         */
+        void onAnimationStart(CanvasAnimation animation);
 
-
-	public static interface IAnimationListener {
-		/**
-		 * <p>Notifies the start of the animation.</p>
-		 *
-		 * @param animation The started animation.
-		 */
-		void onAnimationStart(CanvasAnimation animation);
-
-		/**
-		 * <p>Notifies the end of the animation. This callback is not invoked
-		 * for animations with repeat count set to INFINITE.</p>
-		 *
-		 * @param animation The animation which reached its end.
-		 */
-		void onAnimationEnd(CanvasAnimation animation);
-	}
+        /**
+         * <p>Notifies the end of the animation. This callback is not invoked
+         * for animations with repeat count set to INFINITE.</p>
+         *
+         * @param animation The animation which reached its end.
+         */
+        void onAnimationEnd(CanvasAnimation animation);
+    }
 }

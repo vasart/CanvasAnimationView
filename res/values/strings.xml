@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="app_name">CanvasAnimationView</string>
-	<string name="menu_settings">Animations</string>
+    <string name="app_name">CanvasAnimationView</string>
+    <string name="menu_settings">Animations</string>
+    <string name="ellipse">Ellipse</string>
+    <string name="cell">Cell</string>
 
 </resources>

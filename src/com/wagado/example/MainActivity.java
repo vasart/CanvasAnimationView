@@ -12,43 +12,43 @@ import com.wagado.widget.EllipseCanvasAnimation;
 
 public class MainActivity extends Activity {
 
-	private CanvasAnimationView mAnimationView;
-	private CanvasAnimation mEllipseAnimation;
-	private CanvasAnimation mCellAnimation;
+    private CanvasAnimationView mAnimationView;
+    private CanvasAnimation mEllipseAnimation;
+    private CanvasAnimation mCellAnimation;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
 
-		mAnimationView = (CanvasAnimationView) findViewById(R.id.animation_view);
+        mAnimationView = (CanvasAnimationView) findViewById(R.id.animation_view);
 
-		mEllipseAnimation = new EllipseCanvasAnimation(3000, true);
-		mCellAnimation = new CellCanvasAnimation(2000, true, 6, 6);
-	}
+        mEllipseAnimation = new EllipseCanvasAnimation(3000, true);
+        mCellAnimation = new CellCanvasAnimation(2000, true, 6, 6);
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.item_ellipse:
-				mAnimationView.setCanvasAnimation(mEllipseAnimation);
-				mAnimationView.startCanvasAnimation();
-				return true;
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_ellipse:
+                mAnimationView.setCanvasAnimation(mEllipseAnimation);
+                mAnimationView.startCanvasAnimation();
+                return true;
 
-			case R.id.item_cell:
-				mAnimationView.setCanvasAnimation(mCellAnimation);
-				mAnimationView.startCanvasAnimation();
-				return true;
+            case R.id.item_cell:
+                mAnimationView.setCanvasAnimation(mCellAnimation);
+                mAnimationView.startCanvasAnimation();
+                return true;
 
-			default:
-				return super.onMenuItemSelected(featureId, item);
-		}
-	}
+            default:
+                return super.onMenuItemSelected(featureId, item);
+        }
+    }
 }
